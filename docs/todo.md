@@ -1,0 +1,9 @@
+- Test
+- Cleanup styles
+- Clear filters button
+- Add search to query param
+- Same image overlay as on the UI page instaead of ants grey one and blue button
+- Light / Dark mode?
+- Error boundary
+- Reload and retry on the data
+- Security around Search params

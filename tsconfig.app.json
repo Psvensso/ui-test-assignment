@@ -1,0 +1,19 @@
+{
+  "extends": ["./tsconfig.base.json", "@tsconfig/vite-react/tsconfig.json"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["vite/client"]
+  },
+  "include": ["src/**/*.tsx", "src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "./typings",
+    "./lib",
+    "./dist",
+    "**/*.e2e.ts",
+    "**/*.e2e.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
+  "compileOnSave": false
+}

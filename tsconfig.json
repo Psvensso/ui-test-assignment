@@ -1,0 +1,13 @@
+{
+  "README": [
+    "This is for node and other tools in the solution, not your packages,",
+    "packages should have their own tsconfig extending tsconfig.base.json"
+  ],
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.e2e.json" },
+    { "path": "./tsconfig.tests.json" }
+  ]
+}

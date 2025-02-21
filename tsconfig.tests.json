@@ -1,0 +1,17 @@
+{
+  "extends": ["./tsconfig.base.json", "@tsconfig/vite-react/tsconfig.json"],
+  "compilerOptions": {
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": ["./vitest.setup.ts", "**/*.test.ts", "**/*.test.tsx"],
+  "exclude": [
+    "node_modules",
+    "./typings",
+    "./lib",
+    "./dist",
+    "./vite.setup.ts",
+    "**/*.e2e.tsx",
+    "**/*.e2e.ts"
+  ],
+  "compileOnSave": false
+}

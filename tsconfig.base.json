@@ -1,0 +1,11 @@
+{
+  "extends": ["@tsconfig/strictest/tsconfig"],
+  "compilerOptions": {
+    "useDefineForClassFields": false, //https://lit.dev/docs/components/properties/#avoiding-issues-with-class-fields
+    "experimentalDecorators": true,
+    "noEmit": true,
+    "checkJs": false,
+    "exactOptionalPropertyTypes": false
+  },
+  "exclude": ["node_modules", "./typings", "./lib", "./dist"]
+}
