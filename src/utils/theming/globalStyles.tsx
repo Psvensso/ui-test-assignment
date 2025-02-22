@@ -7,18 +7,20 @@ export const GlobalStyles = () => (
       html,
       body,
       #root {
-        height: 100vh;
-        width: 100vw;
+        height: 100%;
         margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      body {
         min-width: 320px;
       }
+
       #root {
         display: flex;
         flex-direction: column;
-      }
-
-      *:focus-visible {
-        outline: ${styleConst.colors.uniFi.blue06} auto 1px;
+        overflow-y: auto;
       }
 
       :root {

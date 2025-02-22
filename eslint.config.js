@@ -26,6 +26,7 @@ export default [
       "node_modules",
       "**/lib",
       "**/dist",
+      "**/tests",
       "**/graphql.tsx",
       "**/graphql.ts",
     ],
@@ -65,6 +66,16 @@ export default [
     settings: {
       react: {
         version: "detect",
+      },
+    },
+  },
+  {
+    files: ["**/tests/**/*.ts", "**/tests/**/*.tsx"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        test: "readonly",
+        expect: "readonly",
       },
     },
   },

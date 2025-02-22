@@ -13,7 +13,8 @@ import { Device } from "./types";
  * If the API request fails, it will throw an ApiError and shown in the ErrorBoundary.
  */
 
-const DATA_API_ENDPOINT = "https://static.ui.com/fingerprint/ui/public.json";
+export const DATA_API_ENDPOINT =
+  "https://static.ui.com/fingerprint/ui/public.json";
 export type TApiDeviceResponse = {
   version: string;
   devices: Readonly<Device>[];

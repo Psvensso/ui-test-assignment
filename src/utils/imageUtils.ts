@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Device } from "./types";
 
-const BASE_IMAGE_URL = "https://images.svc.ui.com/";
+export const BASE_IMAGE_URL = "https://images.svc.ui.com/";
 
 export const IMAGE_SIZE = {
   icon: 24,

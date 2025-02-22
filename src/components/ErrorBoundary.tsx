@@ -1,4 +1,3 @@
-import { Button } from "antd";
 import React from "react";
 import { clearDevicesCache } from "../utils/dataLoader";
 import { UiLogoSvg } from "./UiLogoSvg";
@@ -64,11 +63,13 @@ export class UiErrorBoundary extends React.Component<Props, State> {
             <UiLogoSvg />
           </a>
           <h1>Well, this is awkward...</h1>
-          <pre style={{ maxWidth: 600, textWrap: "wrap" }}>
+          <pre
+            data-part="error-description"
+            style={{ maxWidth: 600, textWrap: "wrap" }}
+          >
             {this.state.error?.message}
           </pre>
-          <Button
-            type="link"
+          <a
             onClick={() => {
               //This removes all filters from the URL
               //thats a common way to clean problems
@@ -77,7 +78,7 @@ export class UiErrorBoundary extends React.Component<Props, State> {
             }}
           >
             Try again
-          </Button>
+          </a>
         </div>
       );
     }

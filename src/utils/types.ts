@@ -104,7 +104,7 @@ export type NetworkType = Partial<{
   chipset: string;
   details: {
     legacyPortRemap?: unknown;
-    ipsThroughput?: unknown;
+    ipsThroughput?: string;
     [key: string]: unknown;
   };
   deviceCapabilities: DeviceCapabilities[];

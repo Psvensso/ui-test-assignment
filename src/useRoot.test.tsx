@@ -24,7 +24,7 @@ describe("useRoot", () => {
     },
   ];
 
-  describe("sorts", () => {
+  describe("processes data", () => {
     it("should sort devices by product name", () => {
       const unorderedDevs = [
         {
@@ -54,7 +54,38 @@ describe("useRoot", () => {
         unorderedDevs[1],
       ]);
     });
+
+    it("Does not explode when same id are used twice", () => {
+      const unorderedDevs = [
+        {
+          id: "a",
+          product: { name: "A Product again" },
+        },
+        {
+          id: "a",
+          product: { name: "A Product again" },
+        },
+        {
+          id: "a",
+          product: { name: "A Product again" },
+        },
+      ];
+
+      const { result } = renderHook(() =>
+        useRoot({
+          devices: unorderedDevs,
+          version: "0",
+        })
+      );
+
+      expect(result.current.sortedDevices).toEqual([
+        unorderedDevs[0],
+        unorderedDevs[1],
+        unorderedDevs[2],
+      ]);
+    });
   });
+
   describe("getNextDeviceId", () => {
     it("should return the next device id in sequence", () => {
       const { result } = renderHook(() =>

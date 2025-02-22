@@ -115,6 +115,7 @@ export const ProductsTable = ({
 
   return (
     <STable
+      data-part="device-table"
       virtual
       ref={tableRef}
       size="small"
@@ -124,7 +125,7 @@ export const ProductsTable = ({
           onClick: () => {
             updateParams((p) => {
               if (record.id) {
-                p.set(SEARCH_PARAMS.selectedDeviceId, record.id);
+                p.set(SEARCH_PARAMS.selectedDeviceId, record.id || "");
               }
               return p;
             });

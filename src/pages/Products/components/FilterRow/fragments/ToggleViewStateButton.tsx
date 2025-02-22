@@ -11,6 +11,8 @@ export const ToggleViewStateButton = () => {
     <>
       <Button
         type="text"
+        aria-label="Toggle to table view mode"
+        data-part="view-mode-table-btn"
         data-state={viewMode === ViewMode.Table ? "active" : "inactive"}
         onClick={() =>
           updateParams((p) => {
@@ -22,6 +24,8 @@ export const ToggleViewStateButton = () => {
       ></Button>
       <Button
         type="text"
+        aria-label="Toggle to list view mode"
+        data-part="view-mode-list-btn"
         data-state={viewMode === ViewMode.List ? "active" : "inactive"}
         onClick={() =>
           updateParams((p) => {

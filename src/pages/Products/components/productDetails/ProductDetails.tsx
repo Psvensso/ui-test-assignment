@@ -1,121 +1,103 @@
-import { Button, Image, Typography } from "antd";
-import { useSearchParams } from "react-router";
-import { Back } from "../../../../components/svgIcons";
+import styled from "@emotion/styled";
+import { Image, Typography } from "antd";
 import {
   createImageUrl,
   fallBackImageSrc,
   IMAGE_SIZE,
 } from "../../../../utils/imageUtils";
-import { SEARCH_PARAMS } from "../../../../utils/routeConsts";
-import { ProductDetailsWrapper } from "./ProductDetails.styles";
-import { ComplianceInfo } from "./fragments/ComplianceInfo";
-import { DataGridItem } from "./fragments/DataGridItem";
-import { DeviceIdentification } from "./fragments/DeviceIdentification";
+import { styleConst } from "../../../../utils/theming/styleConst";
+import { DataGrid } from "./fragments/DataGrid";
 import { DeviceJsonPreview } from "./fragments/JsonPreview";
-import { NetworkCapabilities } from "./fragments/NetworkCapabilities";
+import { NavBtnsRow } from "./fragments/NavBtnsRow";
 import { ProductDetailsProvider, useProductDetails } from "./useProductDetails";
 const { Text, Title } = Typography;
 
+export const ProductDetailsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+  flex: 1;
+
+  [data-part="device-data-scroll-wrapper"] {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  [data-part="device-data"] {
+    color: red !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    justify-content: center;
+
+    [data-part="image"] {
+      flex-shrink: 0;
+    }
+
+    [data-part="device-description"] {
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      min-height: 0;
+      max-width: 444px;
+      width: 100%;
+    }
+  }
+
+  //If window is smaller than 450px
+  @media (max-width: ${styleConst.breakpoints.sm450}) {
+    [data-part="device-description"] {
+      max-width: unset;
+      min-width: unset;
+      margin: 16px;
+    }
+  }
+`;
+
 export const ProductDetails = (p: { className?: string }) => {
-  const [, updateParams] = useSearchParams();
   const ctx = useProductDetails();
-  const { device, getNextDeviceId, getPreviousDeviceId } = ctx;
+  const { device } = ctx;
+
   if (!device) {
     throw new Error("Error: A device with that id was not found");
   }
 
   return (
     <ProductDetailsProvider value={ctx}>
-      <ProductDetailsWrapper className={p.className}>
-        <div data-part="navigation">
-          <Button
-            type="text"
-            aria-label="close details"
-            data-part="back-btn"
-            onClick={() => {
-              updateParams((p) => {
-                p.delete(SEARCH_PARAMS.selectedDeviceId);
-                return p;
-              });
-            }}
-            icon={<Back />}
-          >
-            Back
-          </Button>
-          <div data-part="nex-prev-btns">
-            <Button
-              type="text"
-              aria-label="previous device"
-              data-part="previous-btn"
-              onClick={() => {
-                updateParams((p) => {
-                  const prevId = getPreviousDeviceId(device?.id || "");
-                  if (prevId) {
-                    p.set(SEARCH_PARAMS.selectedDeviceId, prevId);
-                  }
-                  return p;
-                });
-              }}
-              icon={<Back />}
-            ></Button>
-            <Button
-              type="text"
-              aria-label="next device"
-              data-part="next-btn"
-              onClick={() => {
-                updateParams((p) => {
-                  const next = getNextDeviceId(device?.id || "");
-                  if (next) {
-                    p.set(SEARCH_PARAMS.selectedDeviceId, next);
-                  }
-                  return p;
-                });
-              }}
-              icon={
-                <Back
-                  style={{
-                    transform: "rotate(180deg)",
-                  }}
-                />
-              }
-            ></Button>
-          </div>
-        </div>
+      <ProductDetailsWrapper className={p.className} data-part="device-details">
+        <NavBtnsRow />
         {device && (
-          <div data-part="device-data-scrollwrapper">
+          <div data-part="device-data-scroll-wrapper">
             <div data-part="device-data">
-              <div data-part="device-image">
-                <Image
-                  data-part="image"
-                  width={"292px"}
-                  height={"292px"}
-                  preview={false}
-                  fallback={fallBackImageSrc}
-                  src={
-                    createImageUrl({
-                      id: device?.id,
-                      imageId: device?.images?.default,
-                      quality: 100,
-                      size: IMAGE_SIZE.XL,
-                    }) || ""
-                  }
-                />
-              </div>
+              <Image
+                data-part="image"
+                width={"292px"}
+                height={"292px"}
+                preview={false}
+                fallback={fallBackImageSrc}
+                src={
+                  createImageUrl({
+                    id: device?.id,
+                    imageId: device?.images?.default,
+                    quality: 100,
+                    size: IMAGE_SIZE.XL,
+                  }) || ""
+                }
+              />
               <div data-part="device-description">
-                <Title level={2}>{device?.product?.name}</Title>
+                <Title data-part="device-product-name" level={2}>
+                  {device?.product?.name}
+                </Title>
                 <Text type="secondary">{device?.line?.name}</Text>
-                <div data-part="data-grid">
-                  <DataGridItem
-                    label="Product Line"
-                    value={device?.line?.name}
-                  />
-                  <DataGridItem label="ID" value={device?.line?.name} />
-                  <DataGridItem label="Name" value={device?.line?.name} />
-                  <DataGridItem label="Short Name" value={device?.line?.name} />
-                  <DeviceIdentification />
-                  <ComplianceInfo />
-                  <NetworkCapabilities />
-                </div>
+                <DataGrid />
                 <DeviceJsonPreview />
               </div>
             </div>

@@ -108,6 +108,7 @@ export const DropdownSelect = (p: PropsWithChildren<TProps>) => {
               <Button
                 type="text"
                 danger
+                aria-label="Reset"
                 data-part="reset-button"
                 disabled={anyActiveFilterKeys === false}
                 onClick={() => {

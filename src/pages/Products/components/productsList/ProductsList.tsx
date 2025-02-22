@@ -41,6 +41,7 @@ export const ProductsList = ({ hidden, height, width }: TProps) => {
         width: width,
         height: height,
       }}
+      data-part="device-list"
       data={chunkedDevices}
       height={height}
       itemHeight={188}
