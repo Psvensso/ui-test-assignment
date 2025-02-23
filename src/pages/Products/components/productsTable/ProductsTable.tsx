@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Table } from "antd";
-import { ColumnsType } from "antd/es/table";
-import { useMemo, useRef } from "react";
+import { ColumnsType, TableRef } from "antd/es/table";
+import { useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { createImageUrl, IMAGE_SIZE } from "../../../../utils/imageUtils";
 import { SEARCH_PARAMS } from "../../../../utils/routeConsts";
@@ -10,6 +10,10 @@ import { useProductsPageContext } from "../../useProductsPage";
 
 const imageCache = new Map<string, string>();
 const STable = styled(Table<Device>)`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
   [data-part="device-table-row"]:hover {
     cursor: pointer;
   }
@@ -33,7 +37,7 @@ export const ProductsTable = ({
 }) => {
   const [, updateParams] = useSearchParams();
   const { filteredDevices } = useProductsPageContext();
-  const tableRef = useRef(null);
+  const tableRef = useRef<TableRef>(null);
   const tableBodyHeight = height - 39;
 
   const columns: ColumnsType<Device> = useMemo(() => {
@@ -113,6 +117,24 @@ export const ProductsTable = ({
     ];
   }, [filteredDevices]);
 
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      //If END key scroll to bottom
+      if (e.key === "End") {
+        tableRef.current?.scrollTo({ index: filteredDevices.length - 1 });
+      }
+      //If key end scroll up
+      if (e.key === "Home") {
+        tableRef.current?.scrollTo({ index: 0 });
+      }
+      //If enter open the details
+      if (e.key === "Enter") {
+        (e.currentTarget as HTMLDivElement)?.click?.();
+      }
+    },
+    [filteredDevices]
+  );
+
   return (
     <STable
       data-part="device-table"
@@ -122,6 +144,7 @@ export const ProductsTable = ({
       onRow={(record) => {
         return {
           "data-part": "device-table-row",
+          onKeyDown,
           onClick: () => {
             updateParams((p) => {
               if (record.id) {
@@ -130,6 +153,7 @@ export const ProductsTable = ({
               return p;
             });
           },
+          tabIndex: 0,
         };
       }}
       tableLayout="fixed"

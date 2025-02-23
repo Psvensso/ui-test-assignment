@@ -59,13 +59,13 @@ export const ProductsPage = () => {
               {hasRenderedList && (
                 <ProductsList
                   {...sizeProps}
-                  hidden={viewMode !== ViewMode.List}
+                  hidden={viewMode !== ViewMode.List || !!detailsId}
                 />
               )}
               {hasRenderedTable && (
                 <ProductsTable
                   {...sizeProps}
-                  hidden={viewMode !== ViewMode.Table}
+                  hidden={viewMode !== ViewMode.Table || !!detailsId}
                 />
               )}
             </>

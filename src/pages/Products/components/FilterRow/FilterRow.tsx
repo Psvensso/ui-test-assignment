@@ -50,7 +50,7 @@ export const FilterRow = () => {
   const { devices, filteredDevices } = useProductsPageContext();
 
   return (
-    <FilterRowWrapper>
+    <FilterRowWrapper data-part="filter-row">
       <Input
         className="freetext-filter"
         data-part="freetext-filter-input"

@@ -1,8 +1,11 @@
-export type TProductsPageSearchParams =
-  | "productsViewMode"
-  | "productsLineFilter"
-  | "q"
-  | "selectedDeviceId";
+export type TViewModes = "t" | "l";
+
+export type TSearchParams = {
+  productsViewMode: TViewModes;
+  productsLineFilter: string;
+  q: string;
+  selectedDeviceId: string;
+};
 
 export const SEARCH_PARAMS = {
   productsViewMode: "productsViewMode",
@@ -10,7 +13,7 @@ export const SEARCH_PARAMS = {
   productsFreeTextFilter: "q",
   selectedDeviceId: "selectedDeviceId",
 } satisfies {
-  [id: string]: TProductsPageSearchParams;
+  [id: string]: keyof TSearchParams;
 };
 
 export const ViewMode = {

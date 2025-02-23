@@ -3,7 +3,8 @@ import { createTypedContext } from "./utils/createTypedContext";
 import { TApiDeviceResponse } from "./utils/dataLoader";
 import { useImagePreloader } from "./utils/imageUtils";
 import { Device } from "./utils/types";
-
+type LineId = string | number;
+type LineName = string;
 type TStatics = Readonly<{
   deviceLookup: Record<
     string,
@@ -13,7 +14,7 @@ type TStatics = Readonly<{
     }
   >;
   options: {
-    lines: Record<string | number, string>;
+    lines: Record<LineId, LineName>;
   };
 }>;
 

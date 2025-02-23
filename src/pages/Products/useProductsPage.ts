@@ -22,6 +22,7 @@ export const useProductsPage = () => {
     if (!deferredFreeTextFilter && !deferredLineFilter) {
       return deferredDevices;
     }
+
     return deferredDevices.filter((d) => {
       if (deferredFreeTextFilter) {
         const freeTextResult = (
@@ -57,7 +58,6 @@ export const useProductsPage = () => {
   if (viewMode === ViewMode.List) {
     hasRenderedList.current = true;
   }
-
   return {
     viewMode,
     staticLookups,

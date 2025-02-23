@@ -1,7 +1,7 @@
 import { DATA_API_ENDPOINT, TApiDeviceResponse } from "@/utils/dataLoader";
 import { BASE_IMAGE_URL } from "@/utils/imageUtils";
-import { type TProductsPageSearchParams } from "@/utils/routeConsts";
 import { test as base } from "@playwright/test";
+import { ProductsPagePO } from "./ProductsPagePO";
 import { TopTenProductsResponse } from "./topTenProducts";
 
 const BLANK_PNG = Buffer.from(
@@ -15,9 +15,8 @@ type TestFixtures = {
     status?: number;
   };
   imageBody: Buffer<ArrayBuffer>;
-  searchParams: null | Partial<Record<TProductsPageSearchParams, string>>;
   setup: void;
-  setViewport: (config: { width: number; height: number }) => Promise<void>;
+  productsPage: ProductsPagePO;
 };
 
 export const productsPage = {
@@ -29,14 +28,12 @@ export const productsPage = {
       });
     },
     imageBody: [BLANK_PNG, { option: true }],
-    searchParams: [null, { option: true }],
-    setViewport: async ({ page }, use) => {
-      await use(async (config) => {
-        await page.setViewportSize(config);
-      });
+
+    productsPage: async ({ page }, use) => {
+      await use(new ProductsPagePO(page));
     },
     setup: [
-      async ({ page, mockData, searchParams, imageBody }, use) => {
+      async ({ page, mockData, imageBody }, use) => {
         // Mock all image requests
         await page.route(BASE_IMAGE_URL, async (route) => {
           await route.fulfill({
@@ -54,12 +51,6 @@ export const productsPage = {
             body: JSON.stringify(mockData.data),
           });
         });
-
-        if (searchParams) {
-          await page.goto("/" + new URLSearchParams(searchParams).toString());
-        } else {
-          await page.goto("/");
-        }
 
         await use();
       },

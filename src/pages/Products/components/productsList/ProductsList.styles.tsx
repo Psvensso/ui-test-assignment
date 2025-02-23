@@ -4,13 +4,13 @@ export const ProductListRow = styled.div`
   display: flex;
   gap: 16px;
 
-  [data-part="product-card-wrapper"] {
+  [data-part="product-list-card-wrapper"] {
     height: 188px;
     min-height: 0;
     overflow: hidden;
   }
 
-  [data-part="product-card"] {
+  [data-part="product-list-card"] {
     height: 172px;
     min-height: 0;
     overflow: hidden;

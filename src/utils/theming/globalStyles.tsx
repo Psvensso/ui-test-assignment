@@ -98,6 +98,10 @@ export const GlobalStyles = () => (
       a {
         text-decoration: none;
       }
+
+      :focus-visible {
+        outline: ${styleConst.colors.uniFi.blue06} auto 1px;
+      }
     `}
   ></Global>
 );

@@ -77,16 +77,6 @@ describe("DropdownSelect", () => {
       expect(element).toHaveAttribute("area-label", "ar-lbl");
       expect(element).not.toHaveAttribute("data-state", "active");
       expect(element).toHaveAttribute("data-state", "inactive");
-
-      /*
-       // ACT
-      await userEvent.click(screen.getByLabelText("Load Greeting"));
-      await screen.findByRole("heading");
-  
-      // ASSERT
-      expect(screen.getByRole("heading")).toHaveTextContent("hello there");
-      expect(screen.getByRole("button")).toBeDisabled();
-       */
     });
   });
 

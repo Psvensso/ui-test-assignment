@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Button, Checkbox, ConfigProvider, Popover } from "antd";
 import { TooltipPlacement } from "antd/es/tooltip";
-import { ComponentProps, PropsWithChildren, useRef } from "react";
+import { ComponentProps, PropsWithChildren, useMemo, useRef } from "react";
 import { styleConst } from "../../utils/theming/styleConst";
 const DropDownBtn = styled(Button)`
   &[data-state="active"] {
@@ -64,6 +64,9 @@ export const DropdownSelect = (p: PropsWithChildren<TProps>) => {
     placement,
     open,
   } = p;
+  const sortedOptions = useMemo(() => {
+    return Object.entries(options).sort(([, a], [, b]) => a.localeCompare(b));
+  }, [options]);
   const dropDownBtnRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
   const anyActiveFilterKeys =
     Object.values(selectedKeys).find((x) => x) !== undefined;
@@ -83,7 +86,7 @@ export const DropdownSelect = (p: PropsWithChildren<TProps>) => {
               <div data-part="options-title">{dropdownTitle}</div>
             )}
             <div data-part="options-list">
-              {Object.keys(options).map((key) => (
+              {sortedOptions.map(([key, val]) => (
                 <Checkbox
                   key={key}
                   data-part="option-item"
@@ -100,7 +103,7 @@ export const DropdownSelect = (p: PropsWithChildren<TProps>) => {
                     p.onChange(obj);
                   }}
                 >
-                  {options[key]}
+                  {val}
                 </Checkbox>
               ))}
             </div>

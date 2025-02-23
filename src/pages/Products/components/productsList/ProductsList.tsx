@@ -1,6 +1,6 @@
 import { Image } from "antd";
-import VirtualList from "rc-virtual-list";
-import { useMemo } from "react";
+import VirtualList, { ListRef } from "rc-virtual-list";
+import { useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { chunkArray } from "../../../../utils/chunkArray";
 import {
@@ -34,8 +34,29 @@ export const ProductsList = ({ hidden, height, width }: TProps) => {
     return chunkArray(filteredDevices, itemsPerRow);
   }, [filteredDevices, itemsPerRow]);
 
+  const listRef = useRef<ListRef>(null);
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      //If END key scroll to bottom
+      if (e.key === "End") {
+        listRef.current?.scrollTo({ index: filteredDevices.length - 1 });
+      }
+      //If key end scroll up
+      if (e.key === "Home") {
+        listRef.current?.scrollTo({ index: 0 });
+      }
+      //If enter open the details
+      if (e.key === "Enter") {
+        (e.currentTarget as HTMLDivElement)?.click?.();
+      }
+    },
+    [filteredDevices]
+  );
+
   return (
     <VirtualList
+      onKeyDown={onKeyDown}
+      ref={listRef}
       style={{
         display: hidden ? "none" : "block",
         width: width,
@@ -73,12 +94,12 @@ export const ProductsList = ({ hidden, height, width }: TProps) => {
                     return p;
                   });
                 }}
-                data-part="product-card-wrapper"
+                data-part="product-list-card-wrapper"
                 data-rowid={device?.id}
                 key={(device?.id || "") + i}
                 style={{ width: width / itemsPerRow }}
               >
-                <div data-part="product-card" role="listitem" tabIndex={0}>
+                <div data-part="product-list-card" role="listitem" tabIndex={0}>
                   <div data-part="product-line">{device.line?.name}</div>
                   <Image
                     data-part="image"
