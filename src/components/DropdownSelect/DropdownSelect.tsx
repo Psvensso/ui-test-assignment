@@ -9,11 +9,11 @@ const DropDownBtn = styled(Button)`
   }
 `;
 const DropDownContent = styled.div`
-  max-height: min(85vh, 750px);
+  max-height: calc(95vh - 150px);
   min-height: 200px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
 
   [data-part="options-title"] {
     font-weight: bold;
@@ -23,9 +23,9 @@ const DropDownContent = styled.div`
 
   [data-part="options-list"] {
     display: flex;
+    flex: 1;
     flex-direction: column;
-    overflow: auto;
-
+    overflow-y: auto;
     > label {
       padding: 4px 6px;
 
