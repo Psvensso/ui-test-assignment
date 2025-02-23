@@ -1,6 +1,6 @@
 [![Build](https://github.com/Psvensso/ui-test-assignment/actions/workflows/pages.yml/badge.svg?label=build)](https://github.com/Psvensso/ui-test-assignment/actions)
 
-# UI-2
+# ui-test-assignment Per Svensson / PESVEN
 
 Quick start
 
