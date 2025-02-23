@@ -1,3 +1,5 @@
+[![Build](https://github.com/Psvensso/ui-test-assignment/actions/workflows/pages.yml/badge.svg?label=build)](https://github.com/Psvensso/ui-test-assignment/actions)
+
 # UI-2
 
 Quick start
@@ -43,10 +45,19 @@ This application was primarily created for newer end phones and tablets or deskt
 
 This project is a single folder bun and vite based project, e.g. no Workspace/Monorepo. If this project grows much beyond this size a Workspace/Monorepo should be considered.
 
-- public  
+- public/  
   This is your vite public folder where fonts and images are stored
-- src  
-  application source, including unit test files ending with .spec.ts
+- src/
+  - root - Root holds the global context with our data fetch and data prepare
+    application source, including unit test files ending with .test.ts
+  - assets/  
+    this is vite's static assets folder, mainly fonts and favicon
+  - components/  
+    re-usable components and some layout components that uses the root context
+  - pages/  
+    We went for pages (as opposed to views), but there is only one page for now. This is the main structure components of the app.
+  - utils/  
+    consts, theming and utility functions
 - tests  
   E2E Playwright test folder
 
@@ -63,4 +74,23 @@ This project is a single folder bun and vite based project, e.g. no Workspace/Mo
 - [Box from Chakra factory](https://chakra-ui.com/docs/styling/chakra-factory)  
   Please dont confuse the usage of Chakra Factory with the pre-made Chakra components. This app Dont use the Chakra Components, only the utility classes that works in combination with Emotion.
 
-## Test status
+## Test
+
+### Unit
+
+We use vitest with @testing-library/react, Vitest extension for VSCode is recommended or just run with `bun run test`. Can also run with coverage.
+
+#### Status
+
+We absolutely need more unit tests but the @testing-library/react package in combination with React 19 and Vite have had some tough releases lately and the even loop is tricky. Especially read the [user-event issue](https://github.com/testing-library/user-event/issues/1115) discussed here before starting with more testing.
+
+### E2E
+
+We use Playwright for E2e with PO pattern. Since we went for pages for the naming convention for the app "views" we also went for a PO pattern for the e2e even if its probably an over engineering here. Leaving some space to grow.
+
+#### Status
+
+Todo:
+
+- More params testing needed
+- List needs more testing
