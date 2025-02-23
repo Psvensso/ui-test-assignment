@@ -10,6 +10,14 @@ Quick start
 
 ## Architectural overview
 
+### Changes from original design
+
+The app has one distinct difference from the initial design.
+
+The initial design showed a "Search" auto-complete selector above the data table. But rendering a autocomplete selector on top of a full table showing the same data is just confusing and provide low value. Form items above a data list are much more expected to actually filter that data.
+
+However - the "Search/Quick open" component is a good idea and has instead been added to the header component with the same functionality as the "Search" in the design sketches showed. And the "Search" has been implemented as a filter for the data table/list.
+
 ### Target audience
 
 This product was created for an internal audience, not public web / customers. The core functionality are:
@@ -20,7 +28,7 @@ This product was created for an internal audience, not public web / customers. T
 - Deep-linking  
   We assume that product owners want to send deep-links to others with filters included
 
-### Design choices
+### Technical Design choices
 
 #### Data scale
 
@@ -90,7 +98,11 @@ We use Playwright for E2e with PO pattern. Since we went for pages for the namin
 
 #### Status
 
+These have been tested manually but should be automated
+
 Todo:
 
 - More params testing needed
 - List needs more testing
+- More responsive testing, lists should work on mobile etc.
+- Testing on faulty json structures
