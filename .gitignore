@@ -22,7 +22,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
+*.tsbuildinfo
 # Playwright
 /test-results/
 /playwright-report/
