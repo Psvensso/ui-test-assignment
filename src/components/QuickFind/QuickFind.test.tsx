@@ -1,17 +1,25 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { findAllByDataPart, getByDataPart } from "../../test-utils";
+import { getByDataPart } from "../../test-utils";
 import * as RootModule from "../../useRoot";
 import { QuickFind } from "./QuickFind";
-//import { getAllByDataPart, getByDataPart } from "./../test-utils";
 describe("QuickFind", () => {
+  beforeAll(() => {
+    // https://github.com/testing-library/user-event/issues/1115
+    // https://vitest.dev/api/vi.html#vi-stubglobal
+    vi.stubGlobal("jest", {
+      advanceTimersByTime: vi.advanceTimersByTime.bind(vi),
+    });
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
 
     // Type-safe mock using spyOn
     vi.spyOn(RootModule, "useRootContext").mockReturnValue({
-      value: [
+      sortedDevices: [
         {
           id: "1",
           product: { name: "Dream Machine" },
@@ -19,61 +27,85 @@ describe("QuickFind", () => {
         },
         {
           id: "2",
+          product: { name: "Dream Machine Two" },
+          line: { name: "UniFi", id: "unifi-network" },
+        },
+        {
+          id: "3",
           product: { name: "Access hub" },
           line: { name: "UniFi Access", id: "unifi-access" },
         },
+        {
+          id: "4",
+          product: { name: "Access hub 2" },
+          line: { name: "UniFi Access", id: "unifi-access" },
+        },
       ],
-    } as Partial<RootModule.TRootContext> as never);
+    } satisfies Partial<RootModule.TRootContext> as never);
   });
   afterEach(() => {
+    // Ensures all pending timers are flushed before switching to real timers
+    // Reference: https://testing-library.com/docs/using-fake-timers/
+    vi.runOnlyPendingTimers();
     vi.useRealTimers();
   });
 
-  it("renders with initial empty state", () => {
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("renders with initial empty state", async () => {
     render(<QuickFind />);
-    const wrapper = getByDataPart(document.body, "quick-find");
+    const wrapper = await getByDataPart(document.body, "quick-find");
     expect(wrapper).toBeInTheDocument();
+    expect(screen.queryByTestId("quick-find-option")).not.toBeInTheDocument();
   });
 
   it("shows all options when no search text", async () => {
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime.bind(vi),
+    });
+
     render(<QuickFind />);
     const input = screen.getByRole("combobox");
-    fireEvent.click(input);
-    waitFor(() => {
-      expect(screen.getByText("Dream Machine")).toBeInTheDocument();
-      expect(screen.getByText("Access hub")).toBeInTheDocument();
+    await user.click(input);
+    await waitFor(async () => {
+      await expect(screen.getAllByTestId("quick-find-option")).toHaveLength(4);
     });
   });
 
-  it("filters and highlights matches after debounce", async () => {
-    render(<QuickFind />);
-    const input = screen.getByRole("combobox");
-    fireEvent.click(input);
-    waitFor(async () => {
-      const matches = await findAllByDataPart(
-        document.body,
-        "quickfind-option"
-      );
-      expect(matches?.length).toBe(2);
+  it("Filters as expected", async () => {
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime.bind(vi),
     });
 
-    waitFor(async () => {
-      const matches = await findAllByDataPart(
-        document.body,
-        "quickfind-option"
-      );
-      expect(matches?.length).toBe(1);
+    render(<QuickFind />);
+    const input = screen.getByRole("combobox");
+
+    await user.type(input, "Access hub");
+
+    await waitFor(() => {
+      const options = screen.getAllByTestId("quick-find-option");
+      expect(options).toHaveLength(2);
+      const ahOptions = screen.getAllByText(/^Access hub$/);
+      expect(ahOptions).toHaveLength(2);
     });
   });
 
-  it("shows no result when to short search term", () => {
+  it("Sorts highest hits first", async () => {
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime.bind(vi),
+    });
+
     render(<QuickFind />);
     const input = screen.getByRole("combobox");
+    user.type(input, "Dream Machine");
 
-    fireEvent.change(input, { target: { value: "i" } });
-
-    waitFor(async () => {
-      expect(screen.queryByText("Dream Machine")).not.toBeInTheDocument();
+    await waitFor(() => {
+      const options = screen.getAllByTestId("quick-find-option");
+      expect(options).toHaveLength(2);
+      expect(options[0]).toHaveTextContent("Dream Machine");
+      expect(options[1]).toHaveTextContent("Dream Machine Two");
     });
   });
 });

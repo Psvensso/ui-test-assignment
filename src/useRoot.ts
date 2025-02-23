@@ -39,7 +39,7 @@ export const useRoot = ({ devices, version }: TApiDeviceResponse) => {
       return {
         deviceLookup: {},
         options: { lines: {} },
-      } as TStatics;
+      } satisfies TStatics;
     }
 
     return sortedDevices.reduce<TStatics>(

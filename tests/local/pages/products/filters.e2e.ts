@@ -1,13 +1,12 @@
 import { expect } from "@playwright/test";
-import { getTable } from "./utils/productSelectors";
 import { productsPage } from "./utils/productsPageFixture";
+const test = productsPage.test;
+test.describe("Filters", () => {
+  test.beforeEach(async ({ productsPage }) => {
+    await productsPage.open();
+  });
 
-productsPage.test.describe("Filters", () => {
-  productsPage.test.use({
-    // searchParams: {
-    //   productsViewMode: "l",
-    //   productsLineFilter: "L1,L2",
-    // },
+  test.use({
     mockData: {
       data: {
         devices: [
@@ -34,9 +33,15 @@ productsPage.test.describe("Filters", () => {
   });
 
   /** Too big test but time constraint so testing all filter flow in one here, feel free to break this up */
-  productsPage.test("Filter", async ({ page }) => {
-    await page.locator('[data-part="dropdown-button"]').hover();
+  test("Filter", async ({
+    page,
 
+    productsPage: {
+      filterAndNavRow: { getDeviceCount, fillFreetextFilter },
+      tableView: { getRows },
+    },
+  }) => {
+    await page.locator('[data-part="dropdown-button"]').hover();
     const options = await page.locator('[data-part="options-list"] > label');
     //The children of the list
     await expect(options.filter({ hasText: "Line 1" })).toBeVisible();
@@ -44,7 +49,21 @@ productsPage.test.describe("Filters", () => {
     await expect(options.filter({ hasText: "Line 3" })).toBeVisible();
     await expect(await options.count()).toBe(3);
     await options.filter({ hasText: "Line 3" }).click();
-    await page.pause();
-    await getTable(page);
+    await options.filter({ hasText: "Line 2" }).click();
+
+    //Line filter works
+    await expect(getRows({ hasText: "Line 1" })).toBeHidden();
+    await expect(getRows({ hasText: "Line 2" })).toBeVisible();
+    await expect(getRows({ hasText: "Line 3" })).toBeVisible();
+
+    await expect(getDeviceCount()).toContainText("2/3");
+
+    //Line filter in combination with freetext filter works
+    await fillFreetextFilter("Two");
+
+    await expect(getRows({ hasText: "Line 1" })).toBeHidden();
+    await expect(getRows({ hasText: "Line 2" })).toBeVisible();
+    await expect(getRows({ hasText: "Line 3" })).toBeHidden();
+    await expect(getDeviceCount()).toContainText("1/3");
   });
 });

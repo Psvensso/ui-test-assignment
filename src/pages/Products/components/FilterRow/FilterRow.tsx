@@ -83,7 +83,7 @@ export const FilterRow = () => {
         {devices?.length === filteredDevices?.length
           ? null
           : `${filteredDevices?.length}/`}
-        {devices?.length} Devices
+        <span>{devices?.length}</span> Devices
       </Typography.Text>
 
       <div data-part="action-buttons">

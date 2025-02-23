@@ -1,7 +1,7 @@
-export type TViewModes = "t" | "l";
+export type TViewMode = "t" | "l";
 
 export type TSearchParams = {
-  productsViewMode: TViewModes;
+  productsViewMode: TViewMode;
   productsLineFilter: string;
   q: string;
   selectedDeviceId: string;

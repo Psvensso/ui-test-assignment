@@ -1,15 +1,9 @@
-import { expect, Page } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { productsPage } from "./utils/productsPageFixture";
 const test = productsPage.test;
 
-async function scrollToListBottom(page: Page) {
-  //Focus the first element and press End
-
-  const el = await page.locator('[data-part="product-list-card"]').first();
-  await el.focus();
-  //Press keyboard END to scroll to list end
-  await page.keyboard.press("End");
-}
+const nameOfLastTestDataItem = "XX Last";
+const idOfLastTestDataItem = "Last";
 
 test.describe("Rendering", () => {
   test.use({
@@ -20,12 +14,10 @@ test.describe("Rendering", () => {
             id: String(i + 1),
             product: { name: `AAA ${i + 1}` },
           })),
-          ...[
-            {
-              id: "Last",
-              product: { name: `XX Last` },
-            },
-          ],
+          {
+            id: idOfLastTestDataItem,
+            product: { name: nameOfLastTestDataItem },
+          },
         ],
         version: "1.0.0",
       },
@@ -43,7 +35,7 @@ test.describe("Rendering", () => {
       viewPort: { width: 550, height: 450 },
     });
     await productsPage.tableView.scrollToTableBottom();
-    await expect(page.getByText("XX Last")).toBeVisible();
+    await expect(page.getByText(nameOfLastTestDataItem)).toBeVisible();
   });
 
   test.describe("Navigation", () => {
@@ -67,7 +59,7 @@ test.describe("Rendering", () => {
       page,
       productsPage: {
         open,
-        detailsView: { getDetailsWrapper },
+        detailsView: { getDetailsWrapper, closeDetails },
         listView: { getListWrapper },
         tableView: { getTableWrapper },
       },
@@ -84,15 +76,15 @@ test.describe("Rendering", () => {
       const details = await getDetailsWrapper();
       await expect(details).toBeVisible();
       //Close
-      await details.getByRole("button", { name: "close details" }).click();
+      await closeDetails();
       await expect(getTableWrapper()).toBeVisible();
       await expect(getListWrapper()).not.toBeVisible();
     });
-    test("Open close details keeps scroll position in table", async ({
+    test("Open/Close details keeps scroll position in table", async ({
       page,
       productsPage: {
         open,
-        detailsView: { getDetailsWrapper },
+        detailsView: { getDetailsWrapper, closeDetails },
         listView: { getListWrapper },
         tableView: { getTableWrapper, scrollToTableBottom },
       },
@@ -106,28 +98,36 @@ test.describe("Rendering", () => {
       await expect(getTableWrapper()).toBeVisible();
       await scrollToTableBottom();
       //Click first row
-      await getTableWrapper().getByText("XX Last", { exact: true }).click();
+      await getTableWrapper().getByText(nameOfLastTestDataItem).click();
       await expect(getTableWrapper()).not.toBeVisible();
       await expect(getListWrapper()).not.toBeVisible();
       await expect(getDetailsWrapper()).toBeVisible();
 
       await page.waitForTimeout(10);
       //Close
-      await page.getByRole("button", { name: "close details" }).click();
+      await closeDetails();
       await expect(getTableWrapper()).toBeVisible();
 
       await expect(
-        getTableWrapper().getByText("XX Last", { exact: true })
+        getTableWrapper().getByText(nameOfLastTestDataItem)
       ).toBeVisible();
     });
   });
+
   test.describe("Table", () => {
-    test.skip("End and home scrolls table to first/last item", async ({
-      page,
+    test.beforeEach(async ({ productsPage: { open } }) => {
+      await open();
+    });
+    test("End and home scrolls table to first/last item", async ({
+      productsPage: {
+        tableView: { scrollToTableBottom, getRows },
+      },
     }) => {
-      //TODO
+      await scrollToTableBottom();
+      await expect(getRows({ hasText: nameOfLastTestDataItem })).toBeVisible();
     });
   });
+
   test.describe("List", () => {
     test.beforeEach(async ({ productsPage }) => {
       await productsPage.open({
@@ -136,20 +136,22 @@ test.describe("Rendering", () => {
         },
       });
     });
-
-    test.skip("End and home scrolls table to first/last item", async ({
-      page,
+    test("End and home scrolls list to first/last item", async ({
+      productsPage: {
+        listView: { scrollToListBottom, getListWrapper },
+      },
     }) => {
-      //TODO
+      await scrollToListBottom();
+      const lastItem = await getListWrapper().getByText(nameOfLastTestDataItem);
+      await expect(lastItem).toBeVisible();
     });
-
-    test("Open close details keeps scroll position in list", async ({
-      page,
+    test("Open/Close details details keeps scroll position in list", async ({
       productsPage: {
         open,
-        listView: { getListWrapper },
+        detailsView: { closeDetails },
+        listView: { getListWrapper, scrollToListBottom },
       },
-    }, use) => {
+    }) => {
       open({
         searchParams: {
           productsViewMode: "l",
@@ -159,20 +161,15 @@ test.describe("Rendering", () => {
 
       const list = await getListWrapper();
       await expect(list).toBeVisible();
-      await scrollToListBottom(page);
+      await scrollToListBottom();
       //Click first row
       //Ensure list is scrolled last by finding [data-part="product-name"] with text "XX Last"
-      const lastItem = await getListWrapper().getByText("XX Last", {
-        exact: true,
-      });
+      const lastItem = await getListWrapper().getByText(nameOfLastTestDataItem);
       await expect(lastItem).toBeVisible();
       await lastItem.click();
       //Close
-      await page.getByRole("button", { name: "close details" }).click();
-      await expect(getListWrapper()).toBeVisible();
-      await expect(
-        getListWrapper().getByText("XX Last", { exact: true })
-      ).toBeVisible();
+      await closeDetails();
+      await expect(lastItem).toBeVisible();
     });
   });
 
@@ -180,14 +177,12 @@ test.describe("Rendering", () => {
     test.beforeEach(async ({ productsPage }) => {
       await productsPage.open();
     });
-
     test("Navigate next / forward in details", async ({
       page,
-
       productsPage: {
         tableView: { getTableWrapper },
         listView: { getListWrapper },
-        detailsView: { getDetailsWrapper },
+        detailsView: { getDetailsWrapper, closeDetails },
       },
     }) => {
       //Navigate between list and table view
@@ -199,7 +194,7 @@ test.describe("Rendering", () => {
       await expect(getListWrapper()).not.toBeVisible();
       await expect(getDetailsWrapper()).toBeVisible();
       //Close
-      await page.getByRole("button", { name: "close details" }).click();
+      await closeDetails();
       await expect(getTableWrapper()).toBeVisible();
       await expect(getListWrapper()).not.toBeVisible();
     });

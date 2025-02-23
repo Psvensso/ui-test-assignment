@@ -39,7 +39,7 @@ export const QuickFind = (p: TProps) => {
   );
 
   const filteredOptions = useMemo<typeof rawDeviceList | OptionsData[]>(() => {
-    if (!debouncedValue?.length || debouncedValue?.length < 2) {
+    if (!debouncedValue?.length) {
       return rawDeviceList;
     }
 
@@ -49,7 +49,8 @@ export const QuickFind = (p: TProps) => {
           return acc;
         }
         const chunks = findAllChunks(x?.product?.name || "", debouncedValue);
-        if (chunks.length > 1) {
+        const chunksWithMatches = chunks.filter((x) => x.match > -1);
+        if (chunksWithMatches.length > 0) {
           acc.push([x, chunks]);
         }
         return acc;
@@ -87,6 +88,7 @@ export const QuickFind = (p: TProps) => {
           return (
             <OptionsWrapper
               key={x.id}
+              data-testid="quick-find-option"
               onClick={() => {
                 p.onSelect?.(x.id);
               }}
@@ -96,7 +98,6 @@ export const QuickFind = (p: TProps) => {
                   return (
                     <span
                       key={"chunk" + i}
-                      data-part="quickfind-option"
                       className={x.match > -1 ? "quickfind-option-matched" : ""}
                     >
                       {x.value}
@@ -115,6 +116,7 @@ export const QuickFind = (p: TProps) => {
                 p.onSelect?.(x.id);
               }}
               key={x?.id}
+              data-testid="quick-find-option"
             >
               <div>{x?.product?.name}</div>
               <div>{x?.line?.name}</div>
