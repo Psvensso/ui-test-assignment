@@ -35,12 +35,10 @@ export default defineConfig({
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
     },
-
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
     },
-
     {
       name: "Mobile Chrome",
       use: { ...devices["Pixel 5"] },
@@ -54,7 +52,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "bun run preview",
+    command: "bun run build && bun run preview",
     url: "http://localhost:4173",
     reuseExistingServer: !process.env.CI,
   },
