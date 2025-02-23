@@ -35,7 +35,6 @@ export class ProductsPagePO {
       const input = this.filterAndNavRow.getFreetextFilterInput();
       await input.fill(text);
     },
-
     getFreetextFilterInput: () =>
       this.page.getByRole("textbox", {
         name: "Free-text filter",

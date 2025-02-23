@@ -65,5 +65,8 @@ test.describe("Filters", () => {
     await expect(getRows({ hasText: "Line 2" })).toBeVisible();
     await expect(getRows({ hasText: "Line 3" })).toBeHidden();
     await expect(getDeviceCount()).toContainText("1/3");
+
+    //Resetting filters
+    //Test the dropdown filter
   });
 });

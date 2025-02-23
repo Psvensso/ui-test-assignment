@@ -62,6 +62,11 @@ export const FilterRow = () => {
         onChange={(e) => {
           updateParams(
             (p) => {
+              if (!e.target.value) {
+                p.delete(SEARCH_PARAMS.productsFreeTextFilter);
+                return p;
+              }
+
               p.set(SEARCH_PARAMS.productsFreeTextFilter, e.target.value);
               return p;
             },

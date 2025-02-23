@@ -9,11 +9,14 @@ export const ProductLineFilter = () => {
   const { staticLookups } = useProductsPageContext();
   const lineFilters = lineFilter?.split(",").reduce<Record<string, boolean>>(
     (acc, key) => {
-      acc[key] = true;
+      if (key) {
+        acc[key] = true;
+      }
       return acc;
     },
     {} as Record<string, boolean>
   );
+  console.log({ lineFilters });
 
   return (
     <DropdownSelect
@@ -25,6 +28,11 @@ export const ProductLineFilter = () => {
       onChange={(keys) => {
         const keysAsCommaString = Object.keys(keys || {}).join(",");
         updateParams((p) => {
+          if (!keysAsCommaString) {
+            p.delete(SEARCH_PARAMS.productsLineFilter);
+            return p;
+          }
+
           p.set(SEARCH_PARAMS.productsLineFilter, keysAsCommaString);
           return p;
         });
