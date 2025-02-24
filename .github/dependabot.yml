@@ -1,9 +1,18 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "github-actions"
+    commit-message:
+      prefix: "build(deps): "
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+      day: monday
+      time: "04:00"
+    open-pull-requests-limit: 99
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "daily"
     groups:
       dev-dependencies:
         dependency-type: "development"
