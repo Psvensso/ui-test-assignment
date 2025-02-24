@@ -16,7 +16,6 @@ export const ProductLineFilter = () => {
     },
     {} as Record<string, boolean>
   );
-  console.log({ lineFilters });
 
   return (
     <DropdownSelect
