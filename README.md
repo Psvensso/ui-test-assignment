@@ -4,7 +4,7 @@
 
 Quick start
 
-[Install bun](https://bun.sh/docs/installation) if you havent already then from root  
+[Install bun](https://bun.sh/docs/installation) if you havent already then from root    
 `bun install`  
 `bun run dev`
 
