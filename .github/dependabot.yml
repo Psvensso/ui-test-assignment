@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "dev-deps"
+    labels:
+      - "dependencies"
+    versioning-strategy: "auto"
